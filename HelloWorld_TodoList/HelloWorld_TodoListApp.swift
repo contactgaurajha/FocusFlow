@@ -6,12 +6,21 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct HelloWorld_TodoListApp: App {
+    
+    // Initialize Firebase when the app starts
+    init() {
+        FirebaseApp.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Login()
         }
     }
 }
+
+
