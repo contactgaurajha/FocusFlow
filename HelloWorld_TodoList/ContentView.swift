@@ -1,155 +1,172 @@
 import SwiftUI
-
-
-
+import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 struct ContentView: View {
-    @StateObject private var taskStore = TaskStore()
-    @State private var newTaskTitle = ""
-
+    @StateObject private var taskStore = UserTaskStore()
+    @State private var isLoggedIn = false
+    
     private let taskDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/dd/yy"
         return formatter
     }()
-
+    
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                // Logo
-                Image("logo")
-                    .resizable()
-                    .frame(width: 200, height: 50)
-                    .padding(.top, 20)
-
-                // Title
-                Text("Welcome To FocusFlow!")
-                    .font(.system(size: 28).bold())
-                    .padding(.top, 5)
-
-                // Plus button and table label
-                HStack {
-                    Text("Task Table")
-                        .font(.title.bold())
-                        .padding()
-
-                    NavigationLink(destination: SwiftUIView().environmentObject(taskStore)) {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.blue)
-                    }
-                    .padding()
-                }
-
-                // Table header
-                HStack(spacing: 10) {
-                    Text("Done")
-                        .bold()
-                        .frame(width: 50, alignment: .center)
-
-                    Text("Due Date")
-                        .bold()
-                        .frame(width: 100, alignment: .center)
-
-                    Text("Title")
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(.horizontal)
-
-                // Task list
-                // Replace this part in your body:
-
-                // Task list with rounded rectangle background
-                ZStack {
-                    // Rounded rectangle behind the table
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.5), lineWidth: 2) // border color
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color.white)) // optional fill
-                        .padding(.horizontal, 10)
-
-                    // The List itself
-                    List {
-                        ForEach(filteredTasks) { task in
-                            ZStack(alignment: .leading) {
-                                HStack(spacing: 10) {
-                                    // Completed button
-                                    Button(action: { markTaskCompleted(task) }) {
-                                        Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
-                                            .foregroundColor(task.completed ? .blue : .gray)
+        Group {
+            if isLoggedIn {
+                NavigationStack {
+                    ZStack {
+                        Color(red: 242/255, green: 247/255, blue: 252/255)
+                            .ignoresSafeArea()
+                        
+                        VStack(spacing: 20) {
+                            // Logo
+                            Image("FFLogoUpdated")
+                                .resizable()
+                                .frame(width: 200, height: 50)
+                                .padding(.top, 20)
+                            
+                            // Title
+                            Text("Welcome To FocusFlow!")
+                                .font(.system(size: 28).bold())
+                                .padding(.top, 5)
+                                .foregroundColor(Color(red: 6/255, green: 67/255, blue: 117/255))
+                            
+                            // Plus button and label
+                            HStack {
+                                Text("Create New Task:")
+                                    .font(.title.bold())
+                                    .padding()
+                                    .foregroundColor(Color(red: 75/255, green: 139/255, blue: 191/255))
+                                
+                                NavigationLink(destination: AddTaskView().environmentObject(taskStore)) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                        .foregroundColor(Color(red: 75/255, green: 139/255, blue: 191/255))
+                                }
+                                .padding()
+                            }
+                            
+                            // Full Task List
+                            ZStack {
+                                VStack(spacing: 0) {
+                                    HStack(spacing: 10) {
+                                        Text("Done").bold().frame(width: 50).foregroundColor(.white)
+                                        Text("Due").bold().frame(width: 100).foregroundColor(.white)
+                                        Text("Title").bold().frame(maxWidth: .infinity, alignment: .leading).foregroundColor(.white)
                                     }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .frame(width: 50, alignment: .center)
-
-                                    // Due date
-                                    Text(taskDateFormatter.string(from: task.date))
-                                        .frame(width: 100, alignment: .center)
-
-                                    // Title with priority color
-                                    Text(task.title)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(4)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .stroke(priorityColor(for: task.priority), lineWidth: 2)
-                                        )
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 12)
+                                    .background(Color(red: 6/255, green: 67/255, blue: 117/255))
+                                    
+                                    List {
+                                        ForEach(filteredTasks) { task in
+                                            ZStack(alignment: .leading) {
+                                                HStack(spacing: 10) {
+                                                    Button(action: { markTaskCompleted(task) }) {
+                                                        Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
+                                                            .foregroundColor(task.completed ? .blue : .gray)
+                                                    }
+                                                    .buttonStyle(PlainButtonStyle())
+                                                    .frame(width: 50, alignment: .center)
+                                                    
+                                                    Text(taskDateFormatter.string(from: task.date))
+                                                        .frame(width: 100, alignment: .center)
+                                                        .foregroundColor(Color(red: 6/255, green: 67/255, blue: 117/255))
+                                                    
+                                                    Text(task.title)
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                        .padding(4)
+                                                        .foregroundColor(Color(red: 6/255, green: 67/255, blue: 117/255))
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 6)
+                                                                .stroke(priorityColor(for: task.priority), lineWidth: 2)
+                                                        )
+                                                }
+                                                .padding(.vertical, 4)
+                                                
+                                                if task.completed {
+                                                    Rectangle()
+                                                        .fill(Color.gray)
+                                                        .frame(height: 2)
+                                                        .offset(y: 0)
+                                                }
+                                            }
+                                            .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                                            .listRowSeparator(.hidden)
+                                            .background(Color.clear)
+                                        }
+                                        .onDelete { indexSet in
+                                            indexSet.forEach { i in
+                                                taskStore.deleteTask(filteredTasks[i])
+                                            }
+                                        }
+                                    }
+                                    .listStyle(.plain)
                                 }
-                                .padding(.vertical, 4)
-
-                                // Overlay strikethrough line if completed
-                                if task.completed {
-                                    Rectangle()
-                                        .fill(Color.gray)
-                                        .frame(height: 2)
-                                        .offset(y: 0)
-                                }
+                                .padding(10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.white)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.5), lineWidth: 2)
+                                        .allowsHitTesting(false)
+                                )
+                                .padding(.horizontal, 10)
+                            }
+                            
+                            Spacer()
+                        }
+                    }
+                    .navigationTitle("Tasks")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("Logout") {
+                                logout()
                             }
                         }
-                        .onDelete { indexSet in
-                            taskStore.tasks.remove(atOffsets: indexSet)
-                        }
                     }
-                    .listStyle(PlainListStyle())
-                    .padding(.horizontal, 10) // padding to match the rounded rectangle
                 }
-
-
-                Spacer()
+            } else {
+                LoginView()
             }
         }
         .onAppear {
-            removeExpiredTasks()
+            isLoggedIn = Auth.auth().currentUser != nil
+            
+            Auth.auth().addStateDidChangeListener { _, user in
+                isLoggedIn = (user != nil)
+            }
         }
     }
-
+    
     // MARK: - Helpers
-
-    private var filteredTasks: [Task] {
-        // Filter out tasks that were completed more than 5 days ago
+    private var filteredTasks: [UserTask] {
         let validTasks = taskStore.tasks.filter { task in
             if let completedDate = task.completedDate {
                 return Date().timeIntervalSince(completedDate) < 5 * 24 * 60 * 60
             }
             return true
         }
-
-        // Sort tasks: incomplete first, then by date, then by priority
+        
         return validTasks.sorted { t1, t2 in
             if t1.completed != t2.completed {
-                return !t1.completed // incomplete tasks first
+                return !t1.completed
             }
-
             if Calendar.current.isDate(t1.date, inSameDayAs: t2.date) {
-                // Same date, sort by priority
                 return priorityValue(for: t1.priority) > priorityValue(for: t2.priority)
             } else {
                 return t1.date < t2.date
             }
         }
     }
-
-    // Helper function to convert priority to numeric value for sorting
+    
     private func priorityValue(for priority: String) -> Int {
         switch priority {
         case "High": return 3
@@ -158,31 +175,7 @@ struct ContentView: View {
         default: return 0
         }
     }
-    private func markTaskCompleted(_ task: Task) {
-        if let index = taskStore.tasks.firstIndex(where: { $0.id == task.id }) {
-            if taskStore.tasks[index].completed {
-                // Unmark as completed
-                taskStore.tasks[index].completed = false
-                taskStore.tasks[index].completedDate = nil
-            } else {
-                // Mark as completed
-                taskStore.tasks[index].completed = true
-                taskStore.tasks[index].completedDate = Date()
-            }
-        }
-    }
-
-
-    private func removeExpiredTasks() {
-        taskStore.tasks.removeAll { task in
-            if let completedDate = task.completedDate {
-                return Date().timeIntervalSince(completedDate) >= 5 * 24 * 60 * 60
-            }
-            return false
-        }
-    }
-
-   
+    
     private func priorityColor(for priority: String) -> Color {
         switch priority {
         case "High": return .red
@@ -190,5 +183,97 @@ struct ContentView: View {
         case "Low": return .yellow
         default: return .gray
         }
+    }
+    
+    private func markTaskCompleted(_ task: UserTask) {
+        if let index = taskStore.tasks.firstIndex(where: { $0.id == task.id }) {
+            var updatedTask = taskStore.tasks[index]
+            updatedTask.completed.toggle()
+            updatedTask.completedDate = updatedTask.completed ? Date() : nil
+            taskStore.updateTask(updatedTask)
+        }
+    }
+    
+    private func logout() {
+        do {
+            try Auth.auth().signOut()
+            isLoggedIn = false
+        } catch {
+            print("Logout error: \(error.localizedDescription)")
+        }
+    }
+}
+
+// MARK: - AddTaskView
+struct AddTaskView: View {
+    @EnvironmentObject var taskStore: UserTaskStore
+    @Environment(\.dismiss) var dismiss
+    @State private var title = ""
+    @State private var date = Date()
+    @State private var priority = "Medium"
+    
+    private let taskDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd/yy"
+        return formatter
+    }()
+    
+    var body: some View {
+        VStack {
+            Form {
+                Section("Title") {
+                    TextField("Task title", text: $title)
+                }
+                Section("Due Date") {
+                    DatePicker("", selection: $date, displayedComponents: .date)
+                }
+                Section("Priority") {
+                    Picker("Priority", selection: $priority) {
+                        Text("High").tag("High")
+                        Text("Medium").tag("Medium")
+                        Text("Low").tag("Low")
+                    }
+                    .pickerStyle(.segmented)
+                }
+                
+                Button("Add Task") {
+                    let newTask = UserTask(
+                        id: UUID().uuidString,
+                        title: title,
+                        date: date,
+                        priority: priority
+                    )
+                    taskStore.addTask(newTask)
+                    dismiss()
+                }
+            }
+            
+            // Recently Added Tasks
+            if !taskStore.tasks.isEmpty {
+                VStack(alignment: .leading) {
+                    Text("Recently Added Tasks")
+                        .font(.headline)
+                        .padding(.leading, 16)
+                    
+                    List {
+                        ForEach(taskStore.tasks.sorted(by: { $0.date > $1.date }).prefix(5)) { task in
+                            HStack {
+                                Text(task.title)
+                                    .foregroundColor(.black)
+                                Spacer()
+                                Text(taskDateFormatter.string(from: task.date))
+                                    .foregroundColor(.gray)
+                            }
+                            .padding(1)
+                        }
+                    }
+                    .listStyle(.plain)
+                    .frame(height: CGFloat(min(taskStore.tasks.count, 5)) * 44)
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                }
+            }
+        }
+        .navigationTitle("Add Task")
     }
 }

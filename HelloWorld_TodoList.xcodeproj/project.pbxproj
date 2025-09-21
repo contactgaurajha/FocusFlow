@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		066AFEBA2E7FB2AC00B5A9EC /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066AFEB92E7FB2A900B5A9EC /* Task.swift */; };
 		0DA944842E7EFFE500D06A03 /* HelloWorld_TodoListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA944832E7EFFE500D06A03 /* HelloWorld_TodoListApp.swift */; };
 		0DA944862E7EFFE500D06A03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA944852E7EFFE500D06A03 /* ContentView.swift */; };
 		0DA944882E7EFFE700D06A03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DA944872E7EFFE700D06A03 /* Assets.xcassets */; };
@@ -64,6 +65,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		066AFEB92E7FB2A900B5A9EC /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		0DA944802E7EFFE500D06A03 /* HelloWorld_TodoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloWorld_TodoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DA944832E7EFFE500D06A03 /* HelloWorld_TodoListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloWorld_TodoListApp.swift; sourceTree = "<group>"; };
 		0DA944852E7EFFE500D06A03 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			children = (
 				0DA944832E7EFFE500D06A03 /* HelloWorld_TodoListApp.swift */,
 				0DA944852E7EFFE500D06A03 /* ContentView.swift */,
+				066AFEB92E7FB2A900B5A9EC /* Task.swift */,
 				0DA944C72E7F54A200D06A03 /* Login.swift */,
 				0DBA68E02E7F6057002C1826 /* Register.swift */,
 				0DA944872E7EFFE700D06A03 /* Assets.xcassets */,
@@ -363,6 +366,7 @@
 				0DA944842E7EFFE500D06A03 /* HelloWorld_TodoListApp.swift in Sources */,
 				0DA944BC2E7F221E00D06A03 /* SwiftUIView.swift in Sources */,
 				0DA944C82E7F54A200D06A03 /* Login.swift in Sources */,
+				066AFEBA2E7FB2AC00B5A9EC /* Task.swift in Sources */,
 				0DBA68E12E7F6057002C1826 /* Register.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

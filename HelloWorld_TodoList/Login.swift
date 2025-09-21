@@ -11,46 +11,61 @@ struct LoginView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                Spacer()
-                
-                Text("Welcome Back!")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 20)
+            ZStack {
+                // Full screen background
+                Color(red: 242/255, green: 247/255, blue: 252/255)
+                    .ignoresSafeArea()
 
-                TextField("Email", text: $email)
+                VStack {
+                    Spacer()
+                    
+                    Image("FFLogoUpdated")
+                        .resizable()
+                        .frame(width: 200, height: 50)
+                        .padding(.bottom, 50)
+                    
+                    Text("Welcome Back!")
+                        .font(.largeTitle)
+                        .bold()
+                        .padding(.bottom, 20)
+                        .foregroundColor(Color(red: 6/255, green: 67/255, blue: 117/255))
+                    
+                    TextField("Email", text: $email)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .autocapitalization(.none)
+                        .padding(.horizontal) // apply padding here
+                    
+                    SecureField("Password", text: $password)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .autocapitalization(.none)
+                        .padding(.horizontal)
+                    
+                    Button("Login") {
+                        loginAttempt()
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
                     .padding()
-                    .background(Color(.systemGray6))
-                    .autocapitalization(.none)
-
-                SecureField("Password", text: $password)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(red: 75/255, green: 139/255, blue: 191/255))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    
+                    Button("Register") {
+                        showRegister = true
+                    }
+                    .font(.headline)
                     .padding()
-                    .background(Color(.systemGray6))
-                    .autocapitalization(.none)
-
-                Button("Login") {
-                    loginAttempt()
+                    .foregroundColor(Color(red: 75/255, green: 139/255, blue: 191/255))
+                    
+                    Spacer()
+                    
+                    NavigationLink("", destination: RegisterView(), isActive: $showRegister)
+                    NavigationLink("", destination: ContentView(), isActive: $showHome)
                 }
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.blue)
-                .cornerRadius(8)
-                
-                Button("Register") {
-                    showRegister = true
-                }
-                .font(.headline)
-                .padding()
-
-                Spacer()
-                
-                NavigationLink("", destination: RegisterView(), isActive: $showRegister)
-                NavigationLink("", destination: ContentView(), isActive: $showHome)
             }
-            .padding()
             .alert("Login Failed", isPresented: $showError) {
                 Button("OK", role: .cancel) { }
             } message: {
