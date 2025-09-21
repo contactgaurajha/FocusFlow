@@ -65,12 +65,28 @@ struct RegisterView: View {
             return
         }
 
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let error = error {
-                errorMessage = error.localizedDescription
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            if let err = error as NSError? {
+                print("[AUTH] domain=\(err.domain) code=\(err.code) userInfo=\(err.userInfo)")
+                errorMessage = err.localizedDescription
                 showError = true
-            } else {
-                showHome = true
+                return
+            }
+
+            // only runs if sign-up succeeded
+            guard let user = authResult?.user else { return }
+
+            Firestore.firestore().collection("users").document(user.uid).setData([
+                "email": self.email,
+                "createdAt": Timestamp()
+            ]) { fsError in
+                if let fsError = fsError as NSError? {
+                    print("[FIRESTORE] domain=\(fsError.domain) code=\(fsError.code) userInfo=\(fsError.userInfo)")
+                    errorMessage = "Firestore error: \(fsError.localizedDescription)"
+                    showError = true
+                } else {
+                    showHome = true
+                }
             }
         }
     }
