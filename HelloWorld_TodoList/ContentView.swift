@@ -15,107 +15,114 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                // Logo
-                Image("logo")
-                    .resizable()
-                    .frame(width: 200, height: 50)
-                    .padding(.top, 20)
-
-                // Title
-                Text("Welcome To FocusFlow!")
-                    .font(.system(size: 28).bold())
-                    .padding(.top, 5)
-
-                // Plus button and table label
-                HStack {
-                    Text("Task Table")
-                        .font(.title.bold())
+            ZStack {
+                Color(red: 242/255, green: 247/255, blue: 252/255)
+                                    .ignoresSafeArea()
+                
+                VStack(spacing: 20) {
+                    // Logo
+                    Image("logo")
+                        .resizable()
+                        .frame(width: 200, height: 50)
+                        .padding(.top, 20)
+                    
+                    // Title
+                    Text("Welcome To FocusFlow!")
+                        .font(.system(size: 28).bold())
+                        .padding(.top, 5)
+                        .foregroundColor(Color(red: 6/255, green: 67/255, blue: 117/255))
+                    
+                    // Plus button and table label
+                    HStack {
+                        Text("Create New Task:")
+                            .font(.title.bold())
+                            .padding()
+                            .foregroundColor(Color(red: 75/255, green: 139/255, blue: 191/255))
+                        
+                        NavigationLink(destination: SwiftUIView().environmentObject(taskStore)) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(Color(red: 75/255, green: 139/255, blue: 191/255))
+                        }
                         .padding()
-
-                    NavigationLink(destination: SwiftUIView().environmentObject(taskStore)) {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.blue)
                     }
-                    .padding()
-                }
+                    
+                    // Task list with rounded rectangle background
+                    ZStack {
+                        VStack(spacing: 0) {
+                        // Header (non-scrolling)
+                        HStack(spacing: 10) {
+                            Text("Done").bold() .frame(width: 50) .foregroundColor(Color(red: 242/255, green: 247/255, blue: 252/255))
+                            Text("Due").bold()  .frame(width: 100) .foregroundColor(Color(red: 242/255, green: 247/255, blue: 252/255))
+                            Text("Title").bold().frame(maxWidth: .infinity, alignment: .leading) .foregroundColor(Color(red: 242/255, green: 247/255, blue: 252/255))
+                        }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(Color(red: 6/255, green: 67/255, blue: 117/255))
+                        //.opacity(0.12)
+                        // The List (scrolls)
+                        List {
+                            ForEach(filteredTasks) { task in
+                                ZStack(alignment: .leading) {
+                                    HStack(spacing: 10) {
+                                        Button(action: { markTaskCompleted(task) }) {
+                                            Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
+                                                .foregroundColor(task.completed ? .blue : .gray)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                        .frame(width: 50, alignment: .center)
 
-                // Table header
-                HStack(spacing: 10) {
-                    Text("Done")
-                        .bold()
-                        .frame(width: 50, alignment: .center)
+                                        Text(taskDateFormatter.string(from: task.date))
+                                            .frame(width: 100, alignment: .center)
+                                            .foregroundColor(Color(red: 6/255, green: 67/255, blue: 117/255))
 
-                    Text("Due Date")
-                        .bold()
-                        .frame(width: 100, alignment: .center)
-
-                    Text("Title")
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(.horizontal)
-
-                // Task list
-                // Replace this part in your body:
-
-                // Task list with rounded rectangle background
-                ZStack {
-                    // Rounded rectangle behind the table
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.5), lineWidth: 2) // border color
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color.white)) // optional fill
-                        .padding(.horizontal, 10)
-
-                    // The List itself
-                    List {
-                        ForEach(filteredTasks) { task in
-                            ZStack(alignment: .leading) {
-                                HStack(spacing: 10) {
-                                    // Completed button
-                                    Button(action: { markTaskCompleted(task) }) {
-                                        Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
-                                            .foregroundColor(task.completed ? .blue : .gray)
+                                        Text(task.title)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(4)
+                                            .foregroundColor(Color(red: 6/255, green: 67/255, blue: 117/255))
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .stroke(priorityColor(for: task.priority), lineWidth: 2)
+                                            )
                                     }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .frame(width: 50, alignment: .center)
+                                    .padding(.vertical, 4)
 
-                                    // Due date
-                                    Text(taskDateFormatter.string(from: task.date))
-                                        .frame(width: 100, alignment: .center)
-
-                                    // Title with priority color
-                                    Text(task.title)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(4)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .stroke(priorityColor(for: task.priority), lineWidth: 2)
-                                        )
+                                    if task.completed {
+                                        Rectangle()
+                                            .fill(Color.gray)
+                                            .frame(height: 2)
+                                            .offset(y: 0)
+                                    }
                                 }
-                                .padding(.vertical, 4)
-
-                                // Overlay strikethrough line if completed
-                                if task.completed {
-                                    Rectangle()
-                                        .fill(Color.gray)
-                                        .frame(height: 2)
-                                        .offset(y: 0)
-                                }
+                                .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                                .listRowSeparator(.hidden)
+                                .background(Color.clear)
+                            }
+                            .onDelete { indexSet in
+                                taskStore.tasks.remove(atOffsets: indexSet)
                             }
                         }
-                        .onDelete { indexSet in
-                            taskStore.tasks.remove(atOffsets: indexSet)
-                        }
+                        .listStyle(.plain)
+                        .frame(maxHeight: .infinity) // <- lets List claim remaining space so it can scroll
                     }
-                    .listStyle(PlainListStyle())
-                    .padding(.horizontal, 10) // padding to match the rounded rectangle
+                    .padding(10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.white)
+                    )
+                    .overlay(
+                        // Make sure the decorative border does not block touches
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 2)
+                            .allowsHitTesting(false) // <- important if you saw taps/scroll blocked
+                    )
+                    .padding(.horizontal, 10)
+
+                    }
+                    
+                    Spacer()
                 }
-
-
-                Spacer()
             }
         }
         .onAppear {

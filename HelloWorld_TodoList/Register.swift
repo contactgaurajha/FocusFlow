@@ -12,48 +12,52 @@ struct RegisterView: View {
     @State private var errorMessage = ""
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                Spacer()
-                Text("Create Account")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 20)
-
-                TextField("Email", text: $email)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .textInputAutocapitalization(.never)
-
-                SecureField("Password", text: $password)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .textInputAutocapitalization(.never)
-
-                SecureField("Confirm Password", text: $confirmPassword)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .textInputAutocapitalization(.never)
-
-                Button(action: registerUser) {
-                    Text("Register")
-                        .font(.headline)
-                        .foregroundColor(.white)
+        ZStack {
+            Color(red: 242/255, green: 247/255, blue: 252/255)
+                .ignoresSafeArea()
+            NavigationStack {
+                VStack {
+                    Spacer()
+                    Text("Create Account")
+                        .font(.largeTitle)
+                        .bold()
+                        .padding(.bottom, 20)
+                    
+                    TextField("Email", text: $email)
                         .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color(.systemGray6))
+                        .textInputAutocapitalization(.never)
+                    
+                    SecureField("Password", text: $password)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .textInputAutocapitalization(.never)
+                    
+                    SecureField("Confirm Password", text: $confirmPassword)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .textInputAutocapitalization(.never)
+                    
+                    Button(action: registerUser) {
+                        Text("Register")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                    }
+                    .padding(.top, 20)
+                    
+                    Spacer()
+                    
+                    NavigationLink("", destination: ContentView(), isActive: $showHome)
                 }
-                .padding(.top, 20)
-
-                Spacer()
-
-                NavigationLink("", destination: ContentView(), isActive: $showHome)
-            }
-            .padding()
-            .alert("Error", isPresented: $showError) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(errorMessage)
+                .padding()
+                .alert("Error", isPresented: $showError) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text(errorMessage)
+                }
             }
         }
     }
