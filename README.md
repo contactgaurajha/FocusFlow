@@ -3,9 +3,14 @@
 
 ## **Our Goals:**
 1. Create a to-do list that sorts tasks by priority & date
+<<<<<<< HEAD
 2. Send reminders to finish tasks
 3. Keep the user's to-do list synced across other Apple devices  
 4. Integrate with Apple Calendar to save time for students
+=======
+3. Keep the user's to-do list synced across other Apple devices 
+4. **Potential future update:** integrate with Apple Calendar to save time for students
+>>>>>>> main
    - Create and add tasks in FocusFlow
    - Automatically adds to the user's Apple Calendar
    - When tasks are marked as completed in FocusFlow, they are automatically deleted from Calendar

@@ -219,7 +219,7 @@ struct AddTaskView: View {
     }()
     
     var body: some View {
-        VStack {
+        VStack(spacing: 10) {
             Form {
                 Section("Title") {
                     TextField("Task title", text: $title)
@@ -244,13 +244,21 @@ struct AddTaskView: View {
                         priority: priority
                     )
                     taskStore.addTask(newTask)
-                    dismiss()
+                    title = ""
+                    date = Date()
+                    priority = "Medium"
                 }
+                .font(.headline)
+                .padding(.vertical, 8)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .background(Color.blue)
+                .cornerRadius(8)
             }
             
-            // Recently Added Tasks
+            // Recently Added Tasks (below button)
             if !taskStore.tasks.isEmpty {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text("Recently Added Tasks")
                         .font(.headline)
                         .padding(.leading, 16)
@@ -264,7 +272,7 @@ struct AddTaskView: View {
                                 Text(taskDateFormatter.string(from: task.date))
                                     .foregroundColor(.gray)
                             }
-                            .padding(1)
+                            .padding(4)
                         }
                     }
                     .listStyle(.plain)
@@ -272,8 +280,10 @@ struct AddTaskView: View {
                     .cornerRadius(8)
                     .padding(.horizontal)
                 }
+                .padding(.bottom, 16)
             }
         }
         .navigationTitle("Add Task")
+        .padding(.top, 10)
     }
 }
