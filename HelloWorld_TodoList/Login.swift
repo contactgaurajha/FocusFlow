@@ -19,6 +19,11 @@ struct LoginView: View {
                 VStack {
                     Spacer()
                     
+                    Image("FFLogoUpdated")
+                        .resizable()
+                        .frame(width: 200, height: 50)
+                        .padding(.bottom, 50)
+                    
                     Text("Welcome Back!")
                         .font(.largeTitle)
                         .bold()
@@ -44,7 +49,7 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue)
+                    .background(Color(red: 75/255, green: 139/255, blue: 191/255))
                     .cornerRadius(8)
                     .padding(.horizontal)
                     
@@ -53,6 +58,7 @@ struct LoginView: View {
                     }
                     .font(.headline)
                     .padding()
+                    .foregroundColor(Color(red: 75/255, green: 139/255, blue: 191/255))
                     
                     Spacer()
                     

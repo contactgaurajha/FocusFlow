@@ -28,7 +28,7 @@ struct SwiftUIView: View {
                 .ignoresSafeArea()
             VStack(spacing: 10) {
                 //Spacer(minLength: 20)
-                Image("logo")
+                Image("FFLogoUpdated")
                     .resizable()
                     .frame(width: 200, height: 50)
                     .padding(.top, 20)

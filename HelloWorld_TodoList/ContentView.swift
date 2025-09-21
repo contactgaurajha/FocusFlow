@@ -21,7 +21,7 @@ struct ContentView: View {
                 
                 VStack(spacing: 20) {
                     // Logo
-                    Image("logo")
+                    Image("FFLogoUpdated")
                         .resizable()
                         .frame(width: 200, height: 50)
                         .padding(.top, 20)
